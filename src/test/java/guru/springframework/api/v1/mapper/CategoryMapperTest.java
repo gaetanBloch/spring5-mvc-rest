@@ -18,7 +18,7 @@ class CategoryMapperTest {
     private CategoryMapper categoryMapper = CategoryMapper.INSTANCE;
 
     @Test
-    void categoryToCategoryDTO() {
+    void categoryToCategoryDTOTest() {
         // Given
         Category category = Category.builder().id(ID).name(NAME).build();
 
