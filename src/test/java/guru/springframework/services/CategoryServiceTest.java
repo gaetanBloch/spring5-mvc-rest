@@ -14,6 +14,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.List;
 
+import static guru.springframework.TestUtils.ID1;
+import static guru.springframework.TestUtils.NAME1;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
@@ -23,9 +25,6 @@ import static org.mockito.Mockito.when;
  */
 @ExtendWith(MockitoExtension.class)
 class CategoryServiceTest {
-
-    private static final Long ID = 2L;
-    private static final String NAME = "bar";
 
     @Mock
     private CategoryRepository categoryRepository;
@@ -53,15 +52,15 @@ class CategoryServiceTest {
     @Test
     void getCategoryByNameTest() {
         // Given
-        Category category = Category.builder().id(ID).name(NAME).build();
-        when(categoryRepository.findByName(NAME)).thenReturn(category);
+        Category category = Category.builder().id(ID1).name(NAME1).build();
+        when(categoryRepository.findByName(NAME1)).thenReturn(category);
 
         // When
-        CategoryDTO categoryDTO = categoryService.getCategoryByName(NAME);
+        CategoryDTO categoryDTO = categoryService.getCategoryByName(NAME1);
 
         // Then
         assertNotNull(categoryDTO);
-        assertEquals(ID, categoryDTO.getId());
-        assertEquals(NAME, categoryDTO.getName());
+        assertEquals(ID1, categoryDTO.getId());
+        assertEquals(NAME1, categoryDTO.getName());
     }
 }
