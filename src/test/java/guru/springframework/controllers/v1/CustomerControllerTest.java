@@ -19,8 +19,10 @@ import static guru.springframework.TestUtils.*;
 import static guru.springframework.controllers.v1.CustomerController.URL_CUSTOMERS;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -29,7 +31,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Created on 14/04/2020
  */
 @ExtendWith(MockitoExtension.class)
-class CustomerControllerTest {
+class CustomerControllerTest extends AbstractControllerTest {
+
+    private static final CustomerDTO CUSTOMER_DTO = CustomerDTO.builder()
+            .id(ID1)
+            .firstName(NAME1)
+            .lastName(LAST_NAME1)
+            .customerUrl(CUSTOMER_URL)
+            .build();
 
     @Mock
     private CustomerService customerService;
@@ -45,17 +54,12 @@ class CustomerControllerTest {
     @Test
     void getAllCustomersTest() throws Exception {
         // Given
-        CustomerDTO customer1 = CustomerDTO.builder()
-                .id(ID1)
-                .firstName(NAME1)
-                .lastName(LAST_NAME1)
-                .build();
         CustomerDTO customer2 = CustomerDTO.builder()
                 .id(ID2)
                 .firstName(NAME2)
                 .lastName(LAST_NAME2)
                 .build();
-        List<CustomerDTO> customers = Arrays.asList(customer1, customer2);
+        List<CustomerDTO> customers = Arrays.asList(CUSTOMER_DTO, customer2);
         when(customerService.getAllCustomers()).thenReturn(customers);
 
         // When
@@ -69,21 +73,35 @@ class CustomerControllerTest {
     @Test
     void getCustomerByIdTest() throws Exception {
         // Given
-        CustomerDTO customer = CustomerDTO.builder()
-                .id(ID1)
-                .firstName(NAME1)
-                .lastName(LAST_NAME1)
-                .customerUrl(CUSTOMER_URL)
-                .build();
-        when(customerService.getCustomerById(ID1)).thenReturn(customer);
+        when(customerService.getCustomerById(ID1)).thenReturn(CUSTOMER_DTO);
 
         // When
-        mockMvc.perform(get(URL_CUSTOMERS + "/" + ID1).contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get(URL_CUSTOMERS + "/" + ID1)
+                .contentType(MediaType.APPLICATION_JSON))
 
                 // Then
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.firstName", equalTo(NAME1)))
-                .andExpect(jsonPath("$.lastName", equalTo(LAST_NAME1)))
-                .andExpect(jsonPath("$.customerUrl", equalTo(CUSTOMER_URL)));
+                .andExpect(jsonPath("$.id", equalTo(ID1.intValue())))
+                .andExpect(jsonPath("$.first_name", equalTo(NAME1)))
+                .andExpect(jsonPath("$.last_name", equalTo(LAST_NAME1)))
+                .andExpect(jsonPath("$.customer_url", equalTo(CUSTOMER_URL)));
+    }
+
+    @Test
+    void createCustomerTest() throws Exception {
+        // Given
+        when(customerService.createNewCustomer(any(CustomerDTO.class))).thenReturn(CUSTOMER_DTO);
+
+        // When
+        mockMvc.perform(post(URL_CUSTOMERS)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(CUSTOMER_DTO)))
+
+                // Then
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id", equalTo(ID1.intValue())))
+                .andExpect(jsonPath("$.first_name", equalTo(NAME1)))
+                .andExpect(jsonPath("$.last_name", equalTo(LAST_NAME1)))
+                .andExpect(jsonPath("$.customer_url", equalTo(CUSTOMER_URL)));
     }
 }

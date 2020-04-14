@@ -30,6 +30,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @ExtendWith(MockitoExtension.class)
 class CategoryControllerTest {
+    private static final CategoryDTO CATEGORY_DTO = CategoryDTO.builder()
+            .id(ID1)
+            .name(NAME1)
+            .build();
 
     @Mock
     private CategoryService categoryService;
@@ -45,9 +49,8 @@ class CategoryControllerTest {
     @Test
     void ListCategoriesTest() throws Exception {
         // Given
-        CategoryDTO category1 = CategoryDTO.builder().id(ID1).name(NAME1).build();
         CategoryDTO category2 = CategoryDTO.builder().id(ID2).name(NAME2).build();
-        List<CategoryDTO> categories = Arrays.asList(category1, category2);
+        List<CategoryDTO> categories = Arrays.asList(CATEGORY_DTO, category2);
         when(categoryService.getAllCategories()).thenReturn(categories);
 
         // When
@@ -61,14 +64,15 @@ class CategoryControllerTest {
     @Test
     void getCategoryByNameTest() throws Exception {
         // Given
-        CategoryDTO category = CategoryDTO.builder().id(ID1).name(NAME1).build();
-        when(categoryService.getCategoryByName(NAME1)).thenReturn(category);
+        when(categoryService.getCategoryByName(NAME1)).thenReturn(CATEGORY_DTO);
 
         // When
-        mockMvc.perform(get(URL_CATEGORIES + "/" + NAME1).contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get(URL_CATEGORIES + "/" + NAME1)
+                .contentType(MediaType.APPLICATION_JSON))
 
                 // Then
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", equalTo(ID1.intValue())))
                 .andExpect(jsonPath("$.name", equalTo(NAME1)));
     }
 }
