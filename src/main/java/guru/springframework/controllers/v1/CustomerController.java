@@ -41,6 +41,14 @@ public final class CustomerController {
     @PutMapping("/{id}")
     public ResponseEntity<CustomerDTO> saveCustomer(@PathVariable Long id,
                                                     @RequestBody CustomerDTO customerDTO) {
+        try {
+            customerService.getCustomerById(id);
+        } catch (RuntimeException e) {
+            // TODO replace with NotFoundException
+            return new ResponseEntity<>(
+                    customerService.createNewCustomer(customerDTO), HttpStatus.CREATED
+            );
+        }
         return new ResponseEntity<>(
                 customerService.saveCustomer(id, customerDTO), HttpStatus.OK
         );

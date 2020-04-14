@@ -126,6 +126,25 @@ class CustomerControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void saveNewCustomerTest() throws Exception {
+        // Given
+        when(customerService.getCustomerById(anyLong())).thenThrow(RuntimeException.class);
+        when(customerService.createNewCustomer(any(CustomerDTO.class))).thenReturn(CUSTOMER_DTO);
+
+        // When
+        mockMvc.perform(put(URL_CUSTOMERS + "/" + ID1)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(CUSTOMER_DTO)))
+
+                // Then
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id", equalTo(ID1.intValue())))
+                .andExpect(jsonPath("$.first_name", equalTo(NAME1)))
+                .andExpect(jsonPath("$.last_name", equalTo(LAST_NAME1)))
+                .andExpect(jsonPath("$.customer_url", equalTo(CUSTOMER_URL)));
+    }
+
+    @Test
     void updateCustomerTest() throws Exception {
         // Given
         when(customerService.updateCustomer(anyLong(), any(CustomerDTO.class)))
