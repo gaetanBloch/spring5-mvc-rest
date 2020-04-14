@@ -3,6 +3,7 @@ package guru.springframework.services;
 import guru.springframework.api.v1.mapper.CustomerMapper;
 import guru.springframework.api.v1.model.CustomerDTO;
 import guru.springframework.domain.Customer;
+import guru.springframework.exceptions.ResourceNotFoundException;
 import guru.springframework.repositories.CustomerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -72,8 +73,8 @@ class CustomerServiceTest {
         // Given
         when(customerRepository.findById(ID1)).thenReturn(Optional.empty());
 
-        // When Then throws NotFoundException
-        assertThrows(RuntimeException.class, () -> customerService.getCustomerById(ID1));
+        // When Then throws ResourceNotFoundException
+        assertThrows(ResourceNotFoundException.class, () -> customerService.getCustomerById(ID1));
     }
 
     @Test
@@ -106,8 +107,8 @@ class CustomerServiceTest {
         // Given
         when(customerRepository.findById(ID1)).thenReturn(Optional.empty());
 
-        // When Then throws NotFoundException
-        assertThrows(RuntimeException.class, () -> {
+        // When Then throws ResourceNotFoundException
+        assertThrows(ResourceNotFoundException.class, () -> {
             customerService.saveCustomer(ID1, new CustomerDTO());
         });
         verify(customerRepository, never()).save(any(Customer.class));
@@ -131,8 +132,8 @@ class CustomerServiceTest {
         // Given
         when(customerRepository.findById(ID1)).thenReturn(Optional.empty());
 
-        // When Then throws NotFoundException
-        assertThrows(RuntimeException.class, () -> {
+        // When Then throws ResourceNotFoundException
+        assertThrows(ResourceNotFoundException.class, () -> {
             customerService.updateCustomer(ID1, new CustomerDTO());
         });
         verify(customerRepository, never()).save(any(Customer.class));
@@ -155,8 +156,8 @@ class CustomerServiceTest {
         // Given
         when(customerRepository.findById(ID1)).thenReturn(Optional.empty());
 
-        // When Then throws NotFoundException
-        assertThrows(RuntimeException.class, () -> {
+        // When Then throws ResourceNotFoundException
+        assertThrows(ResourceNotFoundException.class, () -> {
             customerService.deleteCustomerById(ID1);
         });
         verify(customerRepository, never()).deleteById(ID1);

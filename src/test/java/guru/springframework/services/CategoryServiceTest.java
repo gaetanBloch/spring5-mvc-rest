@@ -3,6 +3,7 @@ package guru.springframework.services;
 import guru.springframework.api.v1.mapper.CategoryMapper;
 import guru.springframework.api.v1.model.CategoryDTO;
 import guru.springframework.domain.Category;
+import guru.springframework.exceptions.ResourceNotFoundException;
 import guru.springframework.repositories.CategoryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -69,7 +70,8 @@ class CategoryServiceTest {
         // Given
         when(categoryRepository.findByName(NAME1)).thenReturn(Optional.empty());
 
-        // When Then throws Exception
-        assertThrows(RuntimeException.class, () -> categoryService.getCategoryByName(NAME1));
+        // When Then throws ResourceNotFoundException
+        assertThrows(ResourceNotFoundException.class,
+                () -> categoryService.getCategoryByName(NAME1));
     }
 }

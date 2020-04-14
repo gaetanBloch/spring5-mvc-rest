@@ -1,6 +1,8 @@
 package guru.springframework.controllers.v1;
 
 import guru.springframework.api.v1.model.CustomerDTO;
+import guru.springframework.controllers.RestResponseEntityExceptionHandler;
+import guru.springframework.exceptions.ResourceNotFoundException;
 import guru.springframework.services.CustomerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,8 +23,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -49,7 +50,9 @@ class CustomerControllerTest extends AbstractControllerTest {
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(customerController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(customerController)
+                .setControllerAdvice(new RestResponseEntityExceptionHandler())
+                .build();
     }
 
     @Test
@@ -86,6 +89,19 @@ class CustomerControllerTest extends AbstractControllerTest {
                 .andExpect(jsonPath("$.first_name", equalTo(NAME1)))
                 .andExpect(jsonPath("$.last_name", equalTo(LAST_NAME1)))
                 .andExpect(jsonPath("$.customer_url", equalTo(CUSTOMER_URL)));
+    }
+
+    @Test
+    void getCustomerByIdNotFoundTest() throws Exception {
+        // Given
+        when(customerService.getCustomerById(ID1)).thenThrow(ResourceNotFoundException.class);
+
+        // When
+        mockMvc.perform(get(URL_CUSTOMERS + "/" + ID1)
+                .contentType(MediaType.APPLICATION_JSON))
+
+                // Then
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -126,6 +142,21 @@ class CustomerControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void saveCustomerNotFoundTest() throws Exception {
+        // Given
+        when(customerService.saveCustomer(anyLong(), any(CustomerDTO.class)))
+                .thenThrow(ResourceNotFoundException.class);
+
+        // When
+        mockMvc.perform(put(URL_CUSTOMERS + "/" + ID1)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(CUSTOMER_DTO)))
+
+                // Then
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void updateCustomerTest() throws Exception {
         // Given
         when(customerService.updateCustomer(anyLong(), any(CustomerDTO.class)))
@@ -145,6 +176,21 @@ class CustomerControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void updateCustomerNotFoundTest() throws Exception {
+        // Given
+        when(customerService.updateCustomer(anyLong(), any(CustomerDTO.class)))
+                .thenThrow(ResourceNotFoundException.class);
+
+        // When
+        mockMvc.perform(patch(URL_CUSTOMERS + "/" + ID1)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(CUSTOMER_DTO)))
+
+                // Then
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void deleteCustomerTest() throws Exception {
         // When
         mockMvc.perform(delete(URL_CUSTOMERS + "/" + ID1)
@@ -154,5 +200,18 @@ class CustomerControllerTest extends AbstractControllerTest {
                 .andExpect(status().isNoContent());
 
         verify(customerService).deleteCustomerById(ID1);
+    }
+
+    @Test
+    void deleteCustomerNotFoundTest() throws Exception {
+        // Given
+        doThrow(ResourceNotFoundException.class).when(customerService).deleteCustomerById(ID1);
+
+        // When
+        mockMvc.perform(delete(URL_CUSTOMERS + "/" + ID1)
+                .contentType(MediaType.APPLICATION_JSON))
+
+                // Then
+                .andExpect(status().isNotFound());
     }
 }

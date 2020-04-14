@@ -1,6 +1,8 @@
 package guru.springframework.controllers.v1;
 
 import guru.springframework.api.v1.model.CategoryDTO;
+import guru.springframework.controllers.RestResponseEntityExceptionHandler;
+import guru.springframework.exceptions.ResourceNotFoundException;
 import guru.springframework.services.CategoryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,7 +45,9 @@ class CategoryControllerTest {
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(categoryController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(categoryController)
+                .setControllerAdvice(new RestResponseEntityExceptionHandler())
+                .build();
     }
 
     @Test
@@ -74,5 +78,18 @@ class CategoryControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", equalTo(ID1.intValue())))
                 .andExpect(jsonPath("$.name", equalTo(NAME1)));
+    }
+
+    @Test
+    void getCategoryByNameNotFoundTest() throws Exception {
+        // Given
+        when(categoryService.getCategoryByName(NAME1)).thenThrow(ResourceNotFoundException.class);
+
+        // When
+        mockMvc.perform(get(URL_CATEGORIES + "/" + NAME1)
+                .contentType(MediaType.APPLICATION_JSON))
+
+                // Then
+                .andExpect(status().isNotFound());
     }
 }

@@ -3,6 +3,7 @@ package guru.springframework.services;
 import guru.springframework.api.v1.mapper.CustomerMapper;
 import guru.springframework.api.v1.model.CustomerDTO;
 import guru.springframework.domain.Customer;
+import guru.springframework.exceptions.ResourceNotFoundException;
 import guru.springframework.repositories.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,8 +35,9 @@ final class CustomerServiceImpl implements CustomerService {
     public CustomerDTO getCustomerById(Long id) {
         return customerRepository.findById(id)
                 .map(this::getCustomerWithUrl)
-                // TODO Handle NotFoundException
-                .orElseThrow(() -> new RuntimeException("Customer not found for id = " + id));
+                .orElseThrow(() -> {
+                    throw new ResourceNotFoundException("Customer Not Found for id = " + id);
+                });
     }
 
     @Override
@@ -48,8 +50,7 @@ final class CustomerServiceImpl implements CustomerService {
     @Override
     public CustomerDTO saveCustomer(Long id, CustomerDTO customerDTO) {
         if (customerRepository.findById(id).isEmpty()) {
-            // TODO Handle NotFoundException
-            throw new RuntimeException("Customer not found for id = " + id);
+            throw new ResourceNotFoundException("Customer Not Found for id = " + id);
         }
 
         Customer customer = customerMapper.customerDTOToCustomer(customerDTO);
@@ -69,15 +70,15 @@ final class CustomerServiceImpl implements CustomerService {
                     }
                     return getCustomerWithUrl(customerRepository.save(customer));
                 })
-                // TODO Handle NotFoundException
-                .orElseThrow(() -> new RuntimeException("Customer not found for id = " + id));
+                .orElseThrow(() -> {
+                    throw new ResourceNotFoundException("Customer Not Found for id = " + id);
+                });
     }
 
     @Override
     public void deleteCustomerById(Long id) {
         if (customerRepository.findById(id).isEmpty()) {
-            // TODO Handle NotFoundException
-            throw new RuntimeException("Customer not found for id = " + id);
+            throw new ResourceNotFoundException("Customer Not Found for id = " + id);
         }
 
         customerRepository.deleteById(id);
