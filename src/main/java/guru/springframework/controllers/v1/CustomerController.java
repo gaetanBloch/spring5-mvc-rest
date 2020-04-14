@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(CustomerController.URL_CUSTOMERS)
-final class CustomerController {
-    static final String URL_CUSTOMERS = "/api/v1/customers";
+public final class CustomerController {
+    public static final String URL_CUSTOMERS = "/api/v1/customers";
 
     private final CustomerService customerService;
 

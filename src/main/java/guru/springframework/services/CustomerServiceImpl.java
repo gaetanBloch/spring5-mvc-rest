@@ -2,12 +2,15 @@ package guru.springframework.services;
 
 import guru.springframework.api.v1.mapper.CustomerMapper;
 import guru.springframework.api.v1.model.CustomerDTO;
+import guru.springframework.domain.Customer;
 import guru.springframework.repositories.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static guru.springframework.controllers.v1.CustomerController.URL_CUSTOMERS;
 
 /**
  * @author Gaetan Bloch
@@ -23,15 +26,21 @@ final class CustomerServiceImpl implements CustomerService {
     public List<CustomerDTO> getAllCustomers() {
         return customerRepository.findAll()
                 .stream()
-                .map(customerMapper::customerToCustomerDTO)
+                .map(this::getCustomerWithUrl)
                 .collect(Collectors.toList());
     }
 
     @Override
     public CustomerDTO getCustomerById(Long id) {
         return customerRepository.findById(id)
-                .map(customerMapper::customerToCustomerDTO)
+                .map(this::getCustomerWithUrl)
                 // TODO Handle NotFoundException
                 .orElseThrow(RuntimeException::new);
+    }
+
+    private CustomerDTO getCustomerWithUrl(Customer customer) {
+        CustomerDTO customerDTO = customerMapper.customerToCustomerDTO(customer);
+        customerDTO.setCustomerUrl(URL_CUSTOMERS + "/" + customer.getId());
+        return customerDTO;
     }
 }

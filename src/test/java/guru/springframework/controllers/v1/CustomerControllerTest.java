@@ -73,6 +73,7 @@ class CustomerControllerTest {
                 .id(ID1)
                 .firstName(NAME1)
                 .lastName(LAST_NAME1)
+                .customerUrl(CUSTOMER_URL)
                 .build();
         when(customerService.getCustomerById(ID1)).thenReturn(customer);
 
@@ -82,6 +83,7 @@ class CustomerControllerTest {
                 // Then
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstName", equalTo(NAME1)))
-                .andExpect(jsonPath("$.lastName", equalTo(LAST_NAME1)));
+                .andExpect(jsonPath("$.lastName", equalTo(LAST_NAME1)))
+                .andExpect(jsonPath("$.customerUrl", equalTo(CUSTOMER_URL)));
     }
 }
