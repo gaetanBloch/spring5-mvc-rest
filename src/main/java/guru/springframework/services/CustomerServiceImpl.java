@@ -52,6 +52,22 @@ final class CustomerServiceImpl implements CustomerService {
         return getCustomerWithUrl(customerRepository.save(customer));
     }
 
+    @Override
+    public CustomerDTO updateCustomer(Long id, CustomerDTO customerDTO) {
+        return customerRepository.findById(id)
+                .map(customer -> {
+                    if (customerDTO.getFirstName() != null) {
+                        customer.setFirstName(customerDTO.getFirstName());
+                    }
+                    if (customerDTO.getLastName() != null) {
+                        customer.setLastName(customerDTO.getLastName());
+                    }
+                    return getCustomerWithUrl(customerRepository.save(customer));
+                })
+                // TODO Handle NotFoundException
+                .orElseThrow(RuntimeException::new);
+    }
+
     private CustomerDTO getCustomerWithUrl(Customer customer) {
         CustomerDTO customerDTO = customerMapper.customerToCustomerDTO(customer);
         customerDTO.setCustomerUrl(URL_CUSTOMERS + "/" + customer.getId());

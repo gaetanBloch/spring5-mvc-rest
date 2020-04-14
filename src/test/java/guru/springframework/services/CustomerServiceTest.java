@@ -100,6 +100,19 @@ class CustomerServiceTest {
         assertCustomerDTO(customerDTO);
     }
 
+    @Test
+    void updateCustomerTest() {
+        // Given
+        when(customerRepository.findById(ID1)).thenReturn(Optional.of(CUSTOMER));
+        when(customerRepository.save(any(Customer.class))).thenReturn(CUSTOMER);
+
+        // When
+        CustomerDTO customerDTO = customerService.updateCustomer(ID1, new CustomerDTO());
+
+        // Then
+        assertCustomerDTO(customerDTO);
+    }
+
     private void assertCustomerDTO(CustomerDTO customerDTO) {
         assertNotNull(customerDTO);
         assertEquals(ID1, customerDTO.getId());
