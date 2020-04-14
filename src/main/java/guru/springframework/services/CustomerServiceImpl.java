@@ -35,7 +35,7 @@ final class CustomerServiceImpl implements CustomerService {
         return customerRepository.findById(id)
                 .map(this::getCustomerWithUrl)
                 // TODO Handle NotFoundException
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new RuntimeException("Customer not found for id = " + id));
     }
 
     @Override
@@ -47,6 +47,11 @@ final class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerDTO saveCustomer(Long id, CustomerDTO customerDTO) {
+        if (customerRepository.findById(id).isEmpty()) {
+            // TODO Handle NotFoundException
+            throw new RuntimeException("Customer not found for id = " + id);
+        }
+
         Customer customer = customerMapper.customerDTOToCustomer(customerDTO);
         customer.setId(id);
         return getCustomerWithUrl(customerRepository.save(customer));
@@ -65,11 +70,16 @@ final class CustomerServiceImpl implements CustomerService {
                     return getCustomerWithUrl(customerRepository.save(customer));
                 })
                 // TODO Handle NotFoundException
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new RuntimeException("Customer not found for id = " + id));
     }
 
     @Override
     public void deleteCustomerById(Long id) {
+        if (customerRepository.findById(id).isEmpty()) {
+            // TODO Handle NotFoundException
+            throw new RuntimeException("Customer not found for id = " + id);
+        }
+
         customerRepository.deleteById(id);
     }
 

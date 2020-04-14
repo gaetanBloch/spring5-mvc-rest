@@ -17,8 +17,7 @@ import java.util.Optional;
 import static guru.springframework.TestUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Gaetan Bloch
@@ -73,7 +72,7 @@ class CustomerServiceTest {
         // Given
         when(customerRepository.findById(ID1)).thenReturn(Optional.empty());
 
-        // When Then throws Exception
+        // When Then throws NotFoundException
         assertThrows(RuntimeException.class, () -> customerService.getCustomerById(ID1));
     }
 
@@ -92,6 +91,7 @@ class CustomerServiceTest {
     @Test
     void saveCustomerTest() {
         // Given
+        when(customerRepository.findById(ID1)).thenReturn(Optional.of(new Customer()));
         when(customerRepository.save(any(Customer.class))).thenReturn(CUSTOMER);
 
         // When
@@ -99,6 +99,18 @@ class CustomerServiceTest {
 
         // Then
         assertCustomerDTO(customerDTO);
+    }
+
+    @Test
+    void saveCustomerNotFoundTest() {
+        // Given
+        when(customerRepository.findById(ID1)).thenReturn(Optional.empty());
+
+        // When Then throws NotFoundException
+        assertThrows(RuntimeException.class, () -> {
+            customerService.saveCustomer(ID1, new CustomerDTO());
+        });
+        verify(customerRepository, never()).save(any(Customer.class));
     }
 
     @Test
@@ -119,19 +131,35 @@ class CustomerServiceTest {
         // Given
         when(customerRepository.findById(ID1)).thenReturn(Optional.empty());
 
-        // When Then throws Exception
+        // When Then throws NotFoundException
         assertThrows(RuntimeException.class, () -> {
             customerService.updateCustomer(ID1, new CustomerDTO());
         });
+        verify(customerRepository, never()).save(any(Customer.class));
     }
 
     @Test
-    void deleteCustomerById() {
+    void deleteCustomerByIdTest() {
+        // Given
+        when(customerRepository.findById(ID1)).thenReturn(Optional.of(new Customer()));
+
         // When
         customerService.deleteCustomerById(ID1);
 
         // Then
         verify(customerRepository).deleteById(ID1);
+    }
+
+    @Test
+    void deleteCustomerByIdNotFoundTest() {
+        // Given
+        when(customerRepository.findById(ID1)).thenReturn(Optional.empty());
+
+        // When Then throws NotFoundException
+        assertThrows(RuntimeException.class, () -> {
+            customerService.deleteCustomerById(ID1);
+        });
+        verify(customerRepository, never()).deleteById(ID1);
     }
 
     private void assertCustomerDTO(CustomerDTO customerDTO) {
