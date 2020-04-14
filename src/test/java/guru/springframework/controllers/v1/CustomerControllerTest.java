@@ -20,9 +20,9 @@ import static guru.springframework.controllers.v1.CustomerController.URL_CUSTOME
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -99,6 +99,25 @@ class CustomerControllerTest extends AbstractControllerTest {
 
                 // Then
                 .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id", equalTo(ID1.intValue())))
+                .andExpect(jsonPath("$.first_name", equalTo(NAME1)))
+                .andExpect(jsonPath("$.last_name", equalTo(LAST_NAME1)))
+                .andExpect(jsonPath("$.customer_url", equalTo(CUSTOMER_URL)));
+    }
+
+    @Test
+    void saveCustomerTest() throws Exception {
+        // Given
+        when(customerService.saveCustomer(anyLong(), any(CustomerDTO.class)))
+                .thenReturn(CUSTOMER_DTO);
+
+        // When
+        mockMvc.perform(put(URL_CUSTOMERS + "/" + ID1)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(CUSTOMER_DTO)))
+
+                // Then
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", equalTo(ID1.intValue())))
                 .andExpect(jsonPath("$.first_name", equalTo(NAME1)))
                 .andExpect(jsonPath("$.last_name", equalTo(LAST_NAME1)))
