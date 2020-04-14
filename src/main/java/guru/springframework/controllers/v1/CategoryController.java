@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(CategoryController.URL_CATEGORIES)
-public class CategoryController {
+final class CategoryController {
     static final String URL_CATEGORIES = "/api/v1/categories";
 
     private final CategoryService categoryService;

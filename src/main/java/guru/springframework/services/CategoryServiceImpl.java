@@ -30,6 +30,9 @@ final class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDTO getCategoryByName(String name) {
-        return categoryMapper.categoryToCategoryDTO(categoryRepository.findByName(name));
+        return categoryRepository.findByName(name)
+                .map(categoryMapper::categoryToCategoryDTO)
+                // TODO Handle NotFoundException
+                .orElseThrow(RuntimeException::new);
     }
 }

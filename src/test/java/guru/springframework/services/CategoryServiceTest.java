@@ -12,11 +12,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static guru.springframework.TestUtils.ID1;
 import static guru.springframework.TestUtils.NAME1;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 /**
@@ -53,7 +53,7 @@ class CategoryServiceTest {
     void getCategoryByNameTest() {
         // Given
         Category category = Category.builder().id(ID1).name(NAME1).build();
-        when(categoryRepository.findByName(NAME1)).thenReturn(category);
+        when(categoryRepository.findByName(NAME1)).thenReturn(Optional.of(category));
 
         // When
         CategoryDTO categoryDTO = categoryService.getCategoryByName(NAME1);
@@ -62,5 +62,14 @@ class CategoryServiceTest {
         assertNotNull(categoryDTO);
         assertEquals(ID1, categoryDTO.getId());
         assertEquals(NAME1, categoryDTO.getName());
+    }
+
+    @Test
+    void getCategoryByNameNotFoundTest() {
+        // Given
+        when(categoryRepository.findByName(NAME1)).thenReturn(Optional.empty());
+
+        // When Then throws Exception
+        assertThrows(RuntimeException.class, () -> categoryService.getCategoryByName(NAME1));
     }
 }
