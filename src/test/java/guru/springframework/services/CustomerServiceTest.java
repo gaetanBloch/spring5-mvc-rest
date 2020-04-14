@@ -113,6 +113,17 @@ class CustomerServiceTest {
         assertCustomerDTO(customerDTO);
     }
 
+    @Test
+    void updateCustomerNotFoundTest() {
+        // Given
+        when(customerRepository.findById(ID1)).thenReturn(Optional.empty());
+
+        // When Then throws Exception
+        assertThrows(RuntimeException.class, () -> {
+            customerService.updateCustomer(ID1, new CustomerDTO());
+        });
+    }
+
     private void assertCustomerDTO(CustomerDTO customerDTO) {
         assertNotNull(customerDTO);
         assertEquals(ID1, customerDTO.getId());
