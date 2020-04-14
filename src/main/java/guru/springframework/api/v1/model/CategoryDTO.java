@@ -1,13 +1,15 @@
 package guru.springframework.api.v1.model;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 /**
  * @author Gaetan Bloch
  * Created on 13/04/2020
  */
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class CategoryDTO {
     private Long id;

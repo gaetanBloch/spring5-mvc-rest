@@ -65,7 +65,7 @@ class CategoryControllerTest {
         when(categoryService.getCategoryByName(NAME1)).thenReturn(category);
 
         // When
-        mockMvc.perform(get(URL_CATEGORIES + NAME1).contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get(URL_CATEGORIES + "/" + NAME1).contentType(MediaType.APPLICATION_JSON))
 
                 // Then
                 .andExpect(status().isOk())
