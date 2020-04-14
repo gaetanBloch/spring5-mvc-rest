@@ -21,8 +21,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -173,5 +172,20 @@ class CustomerControllerTest extends AbstractControllerTest {
                 .andExpect(status().isNoContent());
 
         verify(customerService).deleteCustomerById(ID1);
+    }
+
+    @Test
+    void deleteCustomerNotFoundTest() throws Exception {
+        // Given
+        when(customerService.getCustomerById(ID1)).thenThrow(RuntimeException.class);
+
+        // When
+        mockMvc.perform(delete(URL_CUSTOMERS + "/" + ID1)
+                .contentType(MediaType.APPLICATION_JSON))
+
+                // Then
+                .andExpect(status().isNoContent());
+
+        verify(customerService, never()).deleteCustomerById(ID1);
     }
 }

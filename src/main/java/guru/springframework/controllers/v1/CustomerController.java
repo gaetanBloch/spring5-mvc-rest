@@ -63,7 +63,13 @@ public final class CustomerController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> updateCustomer(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteCustomer(@PathVariable Long id) {
+        try {
+            customerService.getCustomerById(id);
+        } catch (RuntimeException e) {
+            // TODO replace with NotFoundException
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
         customerService.deleteCustomerById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
