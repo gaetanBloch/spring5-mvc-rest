@@ -26,6 +26,12 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class CustomerServiceTest {
 
+    private static final Customer CUSTOMER = Customer.builder()
+            .id(ID1)
+            .firstName(NAME1)
+            .lastName(LAST_NAME1)
+            .build();
+
     @Mock
     private CustomerRepository customerRepository;
     private CustomerMapper customerMapper = CustomerMapper.INSTANCE;
@@ -52,12 +58,7 @@ class CustomerServiceTest {
     @Test
     void getCustomerByIdTest() {
         // Given
-        Customer customer = Customer.builder()
-                .id(ID1)
-                .firstName(NAME1)
-                .lastName(LAST_NAME1)
-                .build();
-        when(customerRepository.findById(ID1)).thenReturn(Optional.of(customer));
+        when(customerRepository.findById(ID1)).thenReturn(Optional.of(CUSTOMER));
 
         // When
         CustomerDTO customerDTO = customerService.getCustomerById(ID1);
@@ -78,15 +79,22 @@ class CustomerServiceTest {
     @Test
     void createNewCustomerTest() {
         // Given
-        Customer customer = Customer.builder()
-                .id(ID1)
-                .firstName(NAME1)
-                .lastName(LAST_NAME1)
-                .build();
-        when(customerRepository.save(any(Customer.class))).thenReturn(customer);
+        when(customerRepository.save(any(Customer.class))).thenReturn(CUSTOMER);
 
         // When
         CustomerDTO customerDTO = customerService.createNewCustomer(new CustomerDTO());
+
+        // Then
+        assertCustomerDTO(customerDTO);
+    }
+
+    @Test
+    void saveCustomerTest() {
+        // Given
+        when(customerRepository.save(any(Customer.class))).thenReturn(CUSTOMER);
+
+        // When
+        CustomerDTO customerDTO = customerService.saveCustomer(ID1, new CustomerDTO());
 
         // Then
         assertCustomerDTO(customerDTO);

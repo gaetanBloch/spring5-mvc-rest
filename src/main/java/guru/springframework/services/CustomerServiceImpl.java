@@ -45,6 +45,13 @@ final class CustomerServiceImpl implements CustomerService {
         return getCustomerWithUrl(customer);
     }
 
+    @Override
+    public CustomerDTO saveCustomer(Long id, CustomerDTO customerDTO) {
+        Customer customer = customerMapper.customerDTOToCustomer(customerDTO);
+        customer.setId(id);
+        return getCustomerWithUrl(customerRepository.save(customer));
+    }
+
     private CustomerDTO getCustomerWithUrl(Customer customer) {
         CustomerDTO customerDTO = customerMapper.customerToCustomerDTO(customer);
         customerDTO.setCustomerUrl(URL_CUSTOMERS + "/" + customer.getId());
