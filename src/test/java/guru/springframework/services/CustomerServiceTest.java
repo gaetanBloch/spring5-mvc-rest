@@ -16,6 +16,7 @@ import java.util.Optional;
 
 import static guru.springframework.TestUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 /**
@@ -51,18 +52,18 @@ class CustomerServiceTest {
     @Test
     void getCustomerByIdTest() {
         // Given
-        Customer customer = Customer.builder().id(ID1).firstName(NAME1).lastName(LAST_NAME1).build();
+        Customer customer = Customer.builder()
+                .id(ID1)
+                .firstName(NAME1)
+                .lastName(LAST_NAME1)
+                .build();
         when(customerRepository.findById(ID1)).thenReturn(Optional.of(customer));
 
         // When
         CustomerDTO customerDTO = customerService.getCustomerById(ID1);
 
         // Then
-        assertNotNull(customerDTO);
-        assertEquals(ID1, customerDTO.getId());
-        assertEquals(NAME1, customerDTO.getFirstName());
-        assertEquals(LAST_NAME1, customerDTO.getLastName());
-        assertEquals(CUSTOMER_URL, customerDTO.getCustomerUrl());
+        assertCustomerDTO(customerDTO);
     }
 
     @Test
@@ -72,5 +73,30 @@ class CustomerServiceTest {
 
         // When Then throws Exception
         assertThrows(RuntimeException.class, () -> customerService.getCustomerById(ID1));
+    }
+
+    @Test
+    void createNewCustomerTest() {
+        // Given
+        Customer customer = Customer.builder()
+                .id(ID1)
+                .firstName(NAME1)
+                .lastName(LAST_NAME1)
+                .build();
+        when(customerRepository.save(any(Customer.class))).thenReturn(customer);
+
+        // When
+        CustomerDTO customerDTO = customerService.createNewCustomer(new CustomerDTO());
+
+        // Then
+        assertCustomerDTO(customerDTO);
+    }
+
+    private void assertCustomerDTO(CustomerDTO customerDTO) {
+        assertNotNull(customerDTO);
+        assertEquals(ID1, customerDTO.getId());
+        assertEquals(NAME1, customerDTO.getFirstName());
+        assertEquals(LAST_NAME1, customerDTO.getLastName());
+        assertEquals(CUSTOMER_URL, customerDTO.getCustomerUrl());
     }
 }
