@@ -68,6 +68,11 @@ final class CustomerServiceImpl implements CustomerService {
                 .orElseThrow(RuntimeException::new);
     }
 
+    @Override
+    public void deleteCustomerById(Long id) {
+        customerRepository.deleteById(id);
+    }
+
     private CustomerDTO getCustomerWithUrl(Customer customer) {
         CustomerDTO customerDTO = customerMapper.customerToCustomerDTO(customer);
         customerDTO.setCustomerUrl(URL_CUSTOMERS + "/" + customer.getId());

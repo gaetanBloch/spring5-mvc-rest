@@ -17,6 +17,7 @@ import java.util.Optional;
 import static guru.springframework.TestUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -122,6 +123,15 @@ class CustomerServiceTest {
         assertThrows(RuntimeException.class, () -> {
             customerService.updateCustomer(ID1, new CustomerDTO());
         });
+    }
+
+    @Test
+    void deleteCustomerById() {
+        // When
+        customerService.deleteCustomerById(ID1);
+
+        // Then
+        verify(customerRepository).deleteById(ID1);
     }
 
     private void assertCustomerDTO(CustomerDTO customerDTO) {
