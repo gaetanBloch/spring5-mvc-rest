@@ -16,5 +16,5 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CustomerListDTO {
-    private List<CategoryDTO> categories;
+    private List<CustomerDTO> customers;
 }
