@@ -40,6 +40,14 @@ final class VendorServiceImpl implements VendorService {
                 });
     }
 
+    @Override
+    public VendorDTO createVendor(VendorDTO vendorDTO) {
+        Vendor vendor = vendorRepository.save(
+                vendorMapper.vendorDTOtoVendor(vendorDTO)
+        );
+        return getCustomerWithUrl(vendor);
+    }
+
     private VendorDTO getCustomerWithUrl(Vendor vendor) {
         VendorDTO vendorDTO = vendorMapper.vendorToVendorDTO(vendor);
         vendorDTO.setVendorUrl(URL_VENDORS + "/" + vendor.getId());

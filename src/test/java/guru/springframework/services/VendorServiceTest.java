@@ -17,6 +17,7 @@ import java.util.Optional;
 
 import static guru.springframework.TestUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 
 /**
@@ -70,6 +71,18 @@ class VendorServiceTest {
 
         // When Then throws ResourceNotFoundException
         assertThrows(ResourceNotFoundException.class, () -> vendorService.getVendorById(ID1));
+    }
+
+    @Test
+    void createVendorTest() {
+        // Given
+        when(vendorRepository.save(any(Vendor.class))).thenReturn(VENDOR);
+
+        // When
+        VendorDTO vendorDTO = vendorService.createVendor(new VendorDTO());
+
+        // Then
+        assertVendorDTO(vendorDTO);
     }
 
     private void assertVendorDTO(VendorDTO vendorDTO) {

@@ -43,7 +43,8 @@ final class CustomerServiceImpl implements CustomerService {
     @Override
     public CustomerDTO createCustomer(CustomerDTO customerDTO) {
         Customer customer = customerRepository.save(
-                customerMapper.customerDTOToCustomer(customerDTO));
+                customerMapper.customerDTOToCustomer(customerDTO)
+        );
         return getCustomerWithUrl(customer);
     }
 
