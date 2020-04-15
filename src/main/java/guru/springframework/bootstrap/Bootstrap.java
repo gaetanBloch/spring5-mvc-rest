@@ -2,8 +2,10 @@ package guru.springframework.bootstrap;
 
 import guru.springframework.domain.Category;
 import guru.springframework.domain.Customer;
+import guru.springframework.domain.Vendor;
 import guru.springframework.repositories.CategoryRepository;
 import guru.springframework.repositories.CustomerRepository;
+import guru.springframework.repositories.VendorRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -19,11 +21,13 @@ import org.springframework.stereotype.Component;
 public class Bootstrap implements CommandLineRunner {
     private final CategoryRepository categoryRepository;
     private final CustomerRepository customerRepository;
+    private final VendorRepository vendorRepository;
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         loadCategories();
         loadCustomers();
+        loadVendors();
     }
 
     private void loadCategories() {
@@ -50,5 +54,17 @@ public class Bootstrap implements CommandLineRunner {
         customerRepository.save(jane);
 
         log.debug("Customers Loaded, count = " + customerRepository.count());
+    }
+
+    private void loadVendors() {
+        Vendor fruits = Vendor.builder().name("Fun Fresh Fruits Ltd.").build();
+        Vendor nuts = Vendor.builder().name("Nuts for Nuts Company").build();
+        Vendor vegetables = Vendor.builder().name("Vegies A GoGo").build();
+
+        vendorRepository.save(fruits);
+        vendorRepository.save(nuts);
+        vendorRepository.save(vegetables);
+
+        log.debug("Vendors Loaded, count = " + vendorRepository.count());
     }
 }
