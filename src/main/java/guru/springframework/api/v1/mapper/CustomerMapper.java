@@ -14,7 +14,7 @@ import org.mapstruct.factory.Mappers;
 public interface CustomerMapper {
     CustomerMapper INSTANCE = Mappers.getMapper(CustomerMapper.class);
 
-    @Mapping(target = "customerUrl", source = "")
+    @Mapping(target = "customerUrl", ignore = true)
     CustomerDTO customerToCustomerDTO(Customer customer);
 
     Customer customerDTOToCustomer(CustomerDTO customerDTO);
