@@ -6,6 +6,7 @@ import guru.springframework.bootstrap.Bootstrap;
 import guru.springframework.domain.Customer;
 import guru.springframework.repositories.CategoryRepository;
 import guru.springframework.repositories.CustomerRepository;
+import guru.springframework.repositories.VendorRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,13 +32,15 @@ public class CustomerServiceIT {
     private CustomerRepository customerRepository;
     @Autowired
     private CategoryRepository categoryRepository;
+    @Autowired
+    private VendorRepository vendorRepository;
     private CustomerMapper customerMapper = CustomerMapper.INSTANCE;
     private CustomerService customerService;
 
     @BeforeEach
     void setUp() throws Exception {
         // Bootstrap Data for testing purpose
-        new Bootstrap(categoryRepository, customerRepository).run();
+        new Bootstrap(categoryRepository, customerRepository, vendorRepository).run();
         System.out.println("Loaded Customer Data, count = " + customerRepository.count());
 
         customerService = new CustomerServiceImpl(customerRepository, customerMapper);
