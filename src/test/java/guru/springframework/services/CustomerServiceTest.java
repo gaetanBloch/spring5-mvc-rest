@@ -32,6 +32,11 @@ class CustomerServiceTest {
             .firstName(NAME1)
             .lastName(LAST_NAME1)
             .build();
+    private static final CustomerDTO CUSTOMER_DTO = CustomerDTO.builder()
+            .id(ID1)
+            .firstName(NAME1)
+            .lastName(LAST_NAME1)
+            .build();
 
     @Mock
     private CustomerRepository customerRepository;
@@ -83,7 +88,7 @@ class CustomerServiceTest {
         when(customerRepository.save(any(Customer.class))).thenReturn(CUSTOMER);
 
         // When
-        CustomerDTO customerDTO = customerService.createCustomer(new CustomerDTO());
+        CustomerDTO customerDTO = customerService.createCustomer(CUSTOMER_DTO);
 
         // Then
         assertCustomerDTO(customerDTO);
@@ -96,7 +101,7 @@ class CustomerServiceTest {
         when(customerRepository.save(any(Customer.class))).thenReturn(CUSTOMER);
 
         // When
-        CustomerDTO customerDTO = customerService.saveCustomer(ID1, new CustomerDTO());
+        CustomerDTO customerDTO = customerService.saveCustomer(ID1, CUSTOMER_DTO);
 
         // Then
         assertCustomerDTO(customerDTO);
@@ -121,7 +126,7 @@ class CustomerServiceTest {
         when(customerRepository.save(any(Customer.class))).thenReturn(CUSTOMER);
 
         // When
-        CustomerDTO customerDTO = customerService.updateCustomer(ID1, new CustomerDTO());
+        CustomerDTO customerDTO = customerService.updateCustomer(ID1, CUSTOMER_DTO);
 
         // Then
         assertCustomerDTO(customerDTO);
