@@ -38,7 +38,7 @@ public class CustomerServiceIT {
     private CustomerService customerService;
 
     @BeforeEach
-    void setUp() throws Exception {
+    void setUp() {
         // Bootstrap Data for testing purpose
         new Bootstrap(categoryRepository, customerRepository, vendorRepository).run();
         System.out.println("Loaded Customer Data, count = " + customerRepository.count());
