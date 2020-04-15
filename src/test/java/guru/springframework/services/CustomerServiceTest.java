@@ -46,7 +46,7 @@ class CustomerServiceTest {
     @Test
     void getAllCustomersTest() {
         // Given
-        List<Customer> customers = Arrays.asList(new Customer(), new Customer(), new Customer());
+        List<Customer> customers = Arrays.asList(CUSTOMER, CUSTOMER, CUSTOMER);
         when(customerRepository.findAll()).thenReturn(customers);
 
         // When
