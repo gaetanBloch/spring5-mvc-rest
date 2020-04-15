@@ -114,7 +114,7 @@ class CustomerServiceTest {
 
         // When Then throws ResourceNotFoundException
         assertThrows(ResourceNotFoundException.class, () -> {
-            customerService.saveCustomer(ID1, new CustomerDTO());
+            customerService.saveCustomer(ID1, CUSTOMER_DTO);
         });
         verify(customerRepository, never()).save(any(Customer.class));
     }
@@ -139,7 +139,7 @@ class CustomerServiceTest {
 
         // When Then throws ResourceNotFoundException
         assertThrows(ResourceNotFoundException.class, () -> {
-            customerService.updateCustomer(ID1, new CustomerDTO());
+            customerService.updateCustomer(ID1, CUSTOMER_DTO);
         });
         verify(customerRepository, never()).save(any(Customer.class));
     }

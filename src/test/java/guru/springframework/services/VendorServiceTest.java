@@ -27,6 +27,9 @@ import static org.mockito.Mockito.*;
 class VendorServiceTest {
 
     private static final Vendor VENDOR = Vendor.builder().id(ID1).name(NAME1).build();
+    private static final VendorDTO VENDOR_DTO = VendorDTO.builder()
+            .name(NAME1)
+            .build();
 
     @Mock
     private VendorRepository vendorRepository;
@@ -78,7 +81,7 @@ class VendorServiceTest {
         when(vendorRepository.save(any(Vendor.class))).thenReturn(VENDOR);
 
         // When
-        VendorDTO vendorDTO = vendorService.createVendor(new VendorDTO());
+        VendorDTO vendorDTO = vendorService.createVendor(VENDOR_DTO);
 
         // Then
         assertVendorDTO(vendorDTO);
@@ -91,20 +94,45 @@ class VendorServiceTest {
         when(vendorRepository.save(any(Vendor.class))).thenReturn(VENDOR);
 
         // When
-        VendorDTO vendorDTO = vendorService.saveVendor(ID1, new VendorDTO());
+        VendorDTO vendorDTO = vendorService.saveVendor(ID1, VENDOR_DTO);
 
         // Then
         assertVendorDTO(vendorDTO);
     }
 
     @Test
-    void saveCustomerNotFoundTest() {
+    void saveVendorNotFoundTest() {
         // Given
         when(vendorRepository.findById(ID1)).thenReturn(Optional.empty());
 
         // When Then throws ResourceNotFoundException
         assertThrows(ResourceNotFoundException.class, () -> {
-            vendorService.saveVendor(ID1, new VendorDTO());
+            vendorService.saveVendor(ID1, VENDOR_DTO);
+        });
+        verify(vendorRepository, never()).save(any(Vendor.class));
+    }
+
+    @Test
+    void updateVendorTest() {
+        // Given
+        when(vendorRepository.findById(ID1)).thenReturn(Optional.of(VENDOR));
+        when(vendorRepository.save(any(Vendor.class))).thenReturn(VENDOR);
+
+        // When
+        VendorDTO vendorDTO = vendorService.updateVendor(ID1, VENDOR_DTO);
+
+        // Then
+        assertVendorDTO(vendorDTO);
+    }
+
+    @Test
+    void updateVendorNotFoundTest() {
+        // Given
+        when(vendorRepository.findById(ID1)).thenReturn(Optional.empty());
+
+        // When Then throws ResourceNotFoundException
+        assertThrows(ResourceNotFoundException.class, () -> {
+            vendorService.updateVendor(ID1, VENDOR_DTO);
         });
         verify(vendorRepository, never()).save(any(Vendor.class));
     }
