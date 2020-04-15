@@ -142,4 +142,36 @@ class VendorControllerTest extends AbstractControllerTest {
                 // Then
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    void updateVendorTest() throws Exception {
+        // Given
+        when(vendorService.updateVendor(anyLong(), any(VendorDTO.class)))
+                .thenReturn(VENDOR_DTO);
+
+        // When
+        mockMvc.perform(patch(URL_VENDORS + "/" + ID1)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(VENDOR_DTO)))
+
+                // Then
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", equalTo(NAME1)))
+                .andExpect(jsonPath("$.vendor_url", equalTo(VENDOR_URL)));
+    }
+
+    @Test
+    void updateVendorNotFoundTest() throws Exception {
+        // Given
+        when(vendorService.updateVendor(anyLong(), any(VendorDTO.class)))
+                .thenThrow(ResourceNotFoundException.class);
+
+        // When
+        mockMvc.perform(patch(URL_VENDORS + "/" + ID1)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(VENDOR_DTO)))
+
+                // Then
+                .andExpect(status().isNotFound());
+    }
 }
