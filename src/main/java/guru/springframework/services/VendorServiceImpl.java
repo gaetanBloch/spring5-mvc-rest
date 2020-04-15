@@ -27,14 +27,14 @@ final class VendorServiceImpl implements VendorService {
     public List<VendorDTO> getAllVendors() {
         return vendorRepository.findAll()
                 .stream()
-                .map(this::getCustomerWithUrl)
+                .map(this::getVendorWithUrl)
                 .collect(Collectors.toList());
     }
 
     @Override
     public VendorDTO getVendorById(Long id) {
         return vendorRepository.findById(id)
-                .map(this::getCustomerWithUrl)
+                .map(this::getVendorWithUrl)
                 .orElseThrow(() -> {
                     throw new ResourceNotFoundException("Vendor Not Found for id = " + id);
                 });
@@ -45,10 +45,21 @@ final class VendorServiceImpl implements VendorService {
         Vendor vendor = vendorRepository.save(
                 vendorMapper.vendorDTOtoVendor(vendorDTO)
         );
-        return getCustomerWithUrl(vendor);
+        return getVendorWithUrl(vendor);
     }
 
-    private VendorDTO getCustomerWithUrl(Vendor vendor) {
+    @Override
+    public VendorDTO saveVendor(Long id, VendorDTO vendorDTO) {
+        if (vendorRepository.findById(id).isEmpty()) {
+            throw new ResourceNotFoundException("Vendor Not Found for id = " + id);
+        }
+
+        Vendor vendor = vendorMapper.vendorDTOtoVendor(vendorDTO);
+        vendor.setId(id);
+        return getVendorWithUrl(vendorRepository.save(vendor));
+    }
+
+    private VendorDTO getVendorWithUrl(Vendor vendor) {
         VendorDTO vendorDTO = vendorMapper.vendorToVendorDTO(vendor);
         vendorDTO.setVendorUrl(URL_VENDORS + "/" + vendor.getId());
         return vendorDTO;

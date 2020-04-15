@@ -17,8 +17,7 @@ import java.util.Optional;
 
 import static guru.springframework.TestUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Gaetan Bloch
@@ -83,6 +82,31 @@ class VendorServiceTest {
 
         // Then
         assertVendorDTO(vendorDTO);
+    }
+
+    @Test
+    void saveVendorTest() {
+        // Given
+        when(vendorRepository.findById(ID1)).thenReturn(Optional.of(new Vendor()));
+        when(vendorRepository.save(any(Vendor.class))).thenReturn(VENDOR);
+
+        // When
+        VendorDTO vendorDTO = vendorService.saveVendor(ID1, new VendorDTO());
+
+        // Then
+        assertVendorDTO(vendorDTO);
+    }
+
+    @Test
+    void saveCustomerNotFoundTest() {
+        // Given
+        when(vendorRepository.findById(ID1)).thenReturn(Optional.empty());
+
+        // When Then throws ResourceNotFoundException
+        assertThrows(ResourceNotFoundException.class, () -> {
+            vendorService.saveVendor(ID1, new VendorDTO());
+        });
+        verify(vendorRepository, never()).save(any(Vendor.class));
     }
 
     private void assertVendorDTO(VendorDTO vendorDTO) {
