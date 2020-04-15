@@ -34,7 +34,7 @@ public final class CustomerController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CustomerDTO createCustomer(@RequestBody CustomerDTO customerDTO) {
-        return customerService.createNewCustomer(customerDTO);
+        return customerService.createCustomer(customerDTO);
     }
 
     @PutMapping("/{id}")

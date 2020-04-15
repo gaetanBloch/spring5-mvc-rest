@@ -78,12 +78,12 @@ class CustomerServiceTest {
     }
 
     @Test
-    void createNewCustomerTest() {
+    void createCustomerTest() {
         // Given
         when(customerRepository.save(any(Customer.class))).thenReturn(CUSTOMER);
 
         // When
-        CustomerDTO customerDTO = customerService.createNewCustomer(new CustomerDTO());
+        CustomerDTO customerDTO = customerService.createCustomer(new CustomerDTO());
 
         // Then
         assertCustomerDTO(customerDTO);

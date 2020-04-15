@@ -102,7 +102,7 @@ class CustomerControllerTest extends AbstractControllerTest {
     @Test
     void createCustomerTest() throws Exception {
         // Given
-        when(customerService.createNewCustomer(any(CustomerDTO.class))).thenReturn(CUSTOMER_DTO);
+        when(customerService.createCustomer(any(CustomerDTO.class))).thenReturn(CUSTOMER_DTO);
 
         // When
         mockMvc.perform(post(URL_CUSTOMERS)
