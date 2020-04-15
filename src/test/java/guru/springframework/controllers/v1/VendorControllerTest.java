@@ -22,9 +22,9 @@ import static guru.springframework.controllers.v1.VendorController.URL_VENDORS;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -68,7 +68,7 @@ class VendorControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void getCustomerByIdTest() throws Exception {
+    void getVendorByIdTest() throws Exception {
         // Given
         when(vendorService.getVendorById(ID1)).thenReturn(VENDOR_DTO);
 
@@ -83,7 +83,7 @@ class VendorControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void getCustomerByIdNotFoundTest() throws Exception {
+    void getVendorByIdNotFoundTest() throws Exception {
         // Given
         when(vendorService.getVendorById(ID1)).thenThrow(ResourceNotFoundException.class);
 
@@ -96,7 +96,7 @@ class VendorControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void createCustomerTest() throws Exception {
+    void createVendorTest() throws Exception {
         // Given
         when(vendorService.createVendor(any(VendorDTO.class))).thenReturn(VENDOR_DTO);
 
@@ -109,5 +109,37 @@ class VendorControllerTest extends AbstractControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name", equalTo(NAME1)))
                 .andExpect(jsonPath("$.vendor_url", equalTo(VENDOR_URL)));
+    }
+
+    @Test
+    void saveVendorTest() throws Exception {
+        // Given
+        when(vendorService.saveVendor(anyLong(), any(VendorDTO.class)))
+                .thenReturn(VENDOR_DTO);
+
+        // When
+        mockMvc.perform(put(URL_VENDORS + "/" + ID1)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(VENDOR_DTO)))
+
+                // Then
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", equalTo(NAME1)))
+                .andExpect(jsonPath("$.vendor_url", equalTo(VENDOR_URL)));
+    }
+
+    @Test
+    void saveVendorNotFoundTest() throws Exception {
+        // Given
+        when(vendorService.saveVendor(anyLong(), any(VendorDTO.class)))
+                .thenThrow(ResourceNotFoundException.class);
+
+        // When
+        mockMvc.perform(put(URL_VENDORS + "/" + ID1)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(VENDOR_DTO)))
+
+                // Then
+                .andExpect(status().isNotFound());
     }
 }
