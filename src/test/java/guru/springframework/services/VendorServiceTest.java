@@ -126,6 +126,19 @@ class VendorServiceTest {
     }
 
     @Test
+    void updateVendorEmptyTest() {
+        // Given
+        when(vendorRepository.findById(ID1)).thenReturn(Optional.of(VENDOR));
+        when(vendorRepository.save(any(Vendor.class))).thenReturn(VENDOR);
+
+        // When
+        VendorDTO vendorDTO = vendorService.updateVendor(ID1, new VendorDTO());
+
+        // Then
+        assertVendorDTO(vendorDTO);
+    }
+
+    @Test
     void updateVendorNotFoundTest() {
         // Given
         when(vendorRepository.findById(ID1)).thenReturn(Optional.empty());

@@ -133,6 +133,19 @@ class CustomerServiceTest {
     }
 
     @Test
+    void updateCustomerEmptyTest() {
+        // Given
+        when(customerRepository.findById(ID1)).thenReturn(Optional.of(CUSTOMER));
+        when(customerRepository.save(any(Customer.class))).thenReturn(CUSTOMER);
+
+        // When
+        CustomerDTO customerDTO = customerService.updateCustomer(ID1, new CustomerDTO());
+
+        // Then
+        assertCustomerDTO(customerDTO);
+    }
+
+    @Test
     void updateCustomerNotFoundTest() {
         // Given
         when(customerRepository.findById(ID1)).thenReturn(Optional.empty());
