@@ -23,7 +23,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -170,6 +170,31 @@ class VendorControllerTest extends AbstractControllerTest {
         mockMvc.perform(patch(URL_VENDORS + "/" + ID1)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(VENDOR_DTO)))
+
+                // Then
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deleteCustomerTest() throws Exception {
+        // When
+        mockMvc.perform(delete(URL_VENDORS + "/" + ID1)
+                .contentType(MediaType.APPLICATION_JSON))
+
+                // Then
+                .andExpect(status().isNoContent());
+
+        verify(vendorService).deleteVendorById(ID1);
+    }
+
+    @Test
+    void deleteCustomerNotFoundTest() throws Exception {
+        // Given
+        doThrow(ResourceNotFoundException.class).when(vendorService).deleteVendorById(ID1);
+
+        // When
+        mockMvc.perform(delete(URL_VENDORS + "/" + ID1)
+                .contentType(MediaType.APPLICATION_JSON))
 
                 // Then
                 .andExpect(status().isNotFound());
