@@ -3,6 +3,8 @@ package guru.springframework.controllers.v1;
 import guru.springframework.api.v1.model.CustomerDTO;
 import guru.springframework.api.v1.model.CustomerListDTO;
 import guru.springframework.services.CustomerService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
  * @author Gaetan Bloch
  * Created on 14/04/2020
  */
+@Api("This is the Customer Controller")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(CustomerController.URL_CUSTOMERS)
@@ -19,6 +22,7 @@ public final class CustomerController {
 
     private final CustomerService customerService;
 
+    @ApiOperation(value = "This will get the list of Customers", notes = "Some notes")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public CustomerListDTO getAllCustomers() {
