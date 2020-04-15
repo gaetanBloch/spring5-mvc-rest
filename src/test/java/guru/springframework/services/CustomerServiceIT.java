@@ -47,6 +47,30 @@ public class CustomerServiceIT {
     }
 
     @Test
+    void saveCustomer() {
+        // Given
+        Long id = getCustomerId();
+        Customer originalCustomer = customerRepository.getOne(id);
+        String originalFirstName = originalCustomer.getFirstName();
+        String originalLastName = originalCustomer.getLastName();
+        CustomerDTO customerDTO = CustomerDTO.builder()
+                .firstName(NAME1)
+                .lastName(LAST_NAME1)
+                .build();
+
+        // When
+        customerService.saveCustomer(id, customerDTO);
+        Optional<Customer> updatedCustomer = customerRepository.findById(id);
+
+        // Then
+        assertTrue(updatedCustomer.isPresent());
+        assertEquals(NAME1, updatedCustomer.get().getFirstName());
+        assertEquals(LAST_NAME1, updatedCustomer.get().getLastName());
+        assertNotEquals(originalFirstName, updatedCustomer.get().getFirstName());
+        assertNotEquals(originalLastName, updatedCustomer.get().getLastName());
+    }
+
+    @Test
     void updateCustomerFirstName() {
         // Given
         Long id = getCustomerId();
