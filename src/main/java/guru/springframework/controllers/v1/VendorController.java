@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
  * @author Gaetan Bloch
  * Created on 15/04/2020
  */
-@Api("This is the Vendor REST API Documentation")
+@Api(description = "This is the Vendor REST API Documentation")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(VendorController.URL_VENDORS)
