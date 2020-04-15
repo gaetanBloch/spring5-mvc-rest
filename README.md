@@ -7,6 +7,6 @@ All the endpoints are accessible from http://localhost:8080 once the Spring Boot
 
 Swagger generated REST API documentation: 
 
-![REST API Documentation](https://i.imgur.com/gmv1feH.png)
+![REST API Documentation](https://i.imgur.com/WEus7dk.png)
 
 The Swagger documenation is accessible via http://localhost:8080/swagger-ui.html
