@@ -10,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -19,8 +20,7 @@ import java.util.List;
 
 import static guru.springframework.TestUtils.*;
 import static guru.springframework.controllers.v1.CategoryController.URL_CATEGORIES;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -90,6 +90,11 @@ class CategoryControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
 
                 // Then
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status", equalTo(HttpStatus.NOT_FOUND.value())))
+                .andExpect(jsonPath("$.error", equalTo(HttpStatus.NOT_FOUND.getReasonPhrase())))
+                .andExpect(jsonPath("$.message", emptyOrNullString()))
+                .andExpect(jsonPath("$.trace", any(String.class)))
+                .andExpect(jsonPath("$.path", equalTo(URL_CATEGORIES + "/" + NAME1)));
     }
 }

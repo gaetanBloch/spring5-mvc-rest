@@ -4,12 +4,14 @@ import guru.springframework.api.v1.model.VendorDTO;
 import guru.springframework.controllers.RestResponseEntityExceptionHandler;
 import guru.springframework.exceptions.ResourceNotFoundException;
 import guru.springframework.services.VendorService;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -19,8 +21,7 @@ import java.util.List;
 
 import static guru.springframework.TestUtils.*;
 import static guru.springframework.controllers.v1.VendorController.URL_VENDORS;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
@@ -92,7 +93,12 @@ class VendorControllerTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
 
                 // Then
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status", equalTo(HttpStatus.NOT_FOUND.value())))
+                .andExpect(jsonPath("$.error", equalTo(HttpStatus.NOT_FOUND.getReasonPhrase())))
+                .andExpect(jsonPath("$.message", emptyOrNullString()))
+                .andExpect(jsonPath("$.trace", Matchers.any(String.class)))
+                .andExpect(jsonPath("$.path", equalTo(URL_VENDORS + "/" + ID1)));
     }
 
     @Test
@@ -140,7 +146,12 @@ class VendorControllerTest extends AbstractControllerTest {
                 .content(asJsonString(VENDOR_DTO)))
 
                 // Then
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status", equalTo(HttpStatus.NOT_FOUND.value())))
+                .andExpect(jsonPath("$.error", equalTo(HttpStatus.NOT_FOUND.getReasonPhrase())))
+                .andExpect(jsonPath("$.message", emptyOrNullString()))
+                .andExpect(jsonPath("$.trace", Matchers.any(String.class)))
+                .andExpect(jsonPath("$.path", equalTo(URL_VENDORS + "/" + ID1)));
     }
 
     @Test
@@ -172,7 +183,12 @@ class VendorControllerTest extends AbstractControllerTest {
                 .content(asJsonString(VENDOR_DTO)))
 
                 // Then
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status", equalTo(HttpStatus.NOT_FOUND.value())))
+                .andExpect(jsonPath("$.error", equalTo(HttpStatus.NOT_FOUND.getReasonPhrase())))
+                .andExpect(jsonPath("$.message", emptyOrNullString()))
+                .andExpect(jsonPath("$.trace", Matchers.any(String.class)))
+                .andExpect(jsonPath("$.path", equalTo(URL_VENDORS + "/" + ID1)));
     }
 
     @Test
@@ -197,6 +213,11 @@ class VendorControllerTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
 
                 // Then
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status", equalTo(HttpStatus.NOT_FOUND.value())))
+                .andExpect(jsonPath("$.error", equalTo(HttpStatus.NOT_FOUND.getReasonPhrase())))
+                .andExpect(jsonPath("$.message", emptyOrNullString()))
+                .andExpect(jsonPath("$.trace", Matchers.any(String.class)))
+                .andExpect(jsonPath("$.path", equalTo(URL_VENDORS + "/" + ID1)));
     }
 }
