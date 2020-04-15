@@ -1,6 +1,7 @@
 package guru.springframework;
 
 import guru.springframework.controllers.v1.CustomerController;
+import guru.springframework.controllers.v1.VendorController;
 
 /**
  * @author Gaetan Bloch
@@ -15,6 +16,7 @@ public final class TestUtils {
     public static final String LAST_NAME1 = "baz";
     public static final String LAST_NAME2 = "qux";
     public static final String CUSTOMER_URL = CustomerController.URL_CUSTOMERS + "/" + ID1;
+    public static final String VENDOR_URL = VendorController.URL_VENDORS + "/" + ID1;
 
     private TestUtils() {
         // To prevent instantiation

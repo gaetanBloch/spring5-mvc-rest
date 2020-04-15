@@ -58,12 +58,7 @@ class CustomerControllerTest extends AbstractControllerTest {
     @Test
     void getAllCustomersTest() throws Exception {
         // Given
-        CustomerDTO customer2 = CustomerDTO.builder()
-                .id(ID2)
-                .firstName(NAME2)
-                .lastName(LAST_NAME2)
-                .build();
-        List<CustomerDTO> customers = Arrays.asList(CUSTOMER_DTO, customer2);
+        List<CustomerDTO> customers = Arrays.asList(CUSTOMER_DTO, CUSTOMER_DTO);
         when(customerService.getAllCustomers()).thenReturn(customers);
 
         // When
