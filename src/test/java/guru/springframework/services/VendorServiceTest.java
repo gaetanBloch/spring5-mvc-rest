@@ -3,6 +3,7 @@ package guru.springframework.services;
 import guru.springframework.api.v1.mapper.VendorMapper;
 import guru.springframework.api.v1.model.VendorDTO;
 import guru.springframework.domain.Vendor;
+import guru.springframework.exceptions.ResourceNotFoundException;
 import guru.springframework.repositories.VendorRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,10 +13,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
-import static guru.springframework.TestUtils.ID1;
-import static guru.springframework.TestUtils.NAME1;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static guru.springframework.TestUtils.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 /**
@@ -48,5 +49,32 @@ class VendorServiceTest {
 
         // Then
         assertEquals(3, vendorDTOS.size());
+    }
+
+    @Test
+    void getCustomerByIdTest() {
+        // Given
+        when(vendorRepository.findById(ID1)).thenReturn(Optional.of(VENDOR));
+
+        // When
+        VendorDTO vendorDTO = vendorService.getVendorById(ID1);
+
+        // Then
+        assertVendorDTO(vendorDTO);
+    }
+
+    @Test
+    void getCustomerByIdNotFoundTest() {
+        // Given
+        when(vendorRepository.findById(ID1)).thenReturn(Optional.empty());
+
+        // When Then throws ResourceNotFoundException
+        assertThrows(ResourceNotFoundException.class, () -> vendorService.getVendorById(ID1));
+    }
+
+    private void assertVendorDTO(VendorDTO vendorDTO) {
+        assertNotNull(vendorDTO);
+        assertEquals(NAME1, vendorDTO.getName());
+        assertEquals(VENDOR_URL, vendorDTO.getVendorUrl());
     }
 }

@@ -3,6 +3,7 @@ package guru.springframework.services;
 import guru.springframework.api.v1.mapper.VendorMapper;
 import guru.springframework.api.v1.model.VendorDTO;
 import guru.springframework.domain.Vendor;
+import guru.springframework.exceptions.ResourceNotFoundException;
 import guru.springframework.repositories.VendorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,15 @@ final class VendorServiceImpl implements VendorService {
                 .stream()
                 .map(this::getCustomerWithUrl)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public VendorDTO getVendorById(Long id) {
+        return vendorRepository.findById(id)
+                .map(this::getCustomerWithUrl)
+                .orElseThrow(() -> {
+                    throw new ResourceNotFoundException("Vendor Not Found for id = " + id);
+                });
     }
 
     private VendorDTO getCustomerWithUrl(Vendor vendor) {
