@@ -2,6 +2,7 @@ package guru.springframework.controllers.v1;
 
 import guru.springframework.api.v1.model.VendorDTO;
 import guru.springframework.controllers.RestResponseEntityExceptionHandler;
+import guru.springframework.exceptions.ResourceNotFoundException;
 import guru.springframework.services.VendorService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,9 +17,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.Arrays;
 import java.util.List;
 
-import static guru.springframework.TestUtils.NAME1;
-import static guru.springframework.TestUtils.VENDOR_URL;
+import static guru.springframework.TestUtils.*;
 import static guru.springframework.controllers.v1.VendorController.URL_VENDORS;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -62,5 +63,33 @@ class VendorControllerTest extends AbstractControllerTest {
                 // Then
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.vendors", hasSize(2)));
+    }
+
+    @Test
+    void getCustomerByIdTest() throws Exception {
+        // Given
+        when(vendorService.getVendorById(ID1)).thenReturn(VENDOR_DTO);
+
+        // When
+        mockMvc.perform(get(URL_VENDORS + "/" + ID1)
+                .contentType(MediaType.APPLICATION_JSON))
+
+                // Then
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", equalTo(NAME1)))
+                .andExpect(jsonPath("$.vendor_url", equalTo(VENDOR_URL)));
+    }
+
+    @Test
+    void getCustomerByIdNotFoundTest() throws Exception {
+        // Given
+        when(vendorService.getVendorById(ID1)).thenThrow(ResourceNotFoundException.class);
+
+        // When
+        mockMvc.perform(get(URL_VENDORS + "/" + ID1)
+                .contentType(MediaType.APPLICATION_JSON))
+
+                // Then
+                .andExpect(status().isNotFound());
     }
 }
