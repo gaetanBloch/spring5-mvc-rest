@@ -73,6 +73,15 @@ final class VendorServiceImpl implements VendorService {
                 });
     }
 
+    @Override
+    public void deleteVendorById(Long id) {
+        if (vendorRepository.findById(id).isEmpty()) {
+            throw new ResourceNotFoundException("Vendor Not Found for id = " + id);
+        }
+
+        vendorRepository.deleteById(id);
+    }
+
     private VendorDTO getVendorWithUrl(Vendor vendor) {
         VendorDTO vendorDTO = vendorMapper.vendorToVendorDTO(vendor);
         vendorDTO.setVendorUrl(URL_VENDORS + "/" + vendor.getId());

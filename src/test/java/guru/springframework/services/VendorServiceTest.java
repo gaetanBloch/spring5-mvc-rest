@@ -150,6 +150,30 @@ class VendorServiceTest {
         verify(vendorRepository, never()).save(any(Vendor.class));
     }
 
+    @Test
+    void deleteVendorByIdTest() {
+        // Given
+        when(vendorRepository.findById(ID1)).thenReturn(Optional.of(new Vendor()));
+
+        // When
+        vendorService.deleteVendorById(ID1);
+
+        // Then
+        verify(vendorRepository).deleteById(ID1);
+    }
+
+    @Test
+    void deleteVendorByIdNotFoundTest() {
+        // Given
+        when(vendorRepository.findById(ID1)).thenReturn(Optional.empty());
+
+        // When Then throws ResourceNotFoundException
+        assertThrows(ResourceNotFoundException.class, () -> {
+            vendorService.deleteVendorById(ID1);
+        });
+        verify(vendorRepository, never()).deleteById(ID1);
+    }
+
     private void assertVendorDTO(VendorDTO vendorDTO) {
         assertNotNull(vendorDTO);
         assertEquals(NAME1, vendorDTO.getName());
