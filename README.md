@@ -5,7 +5,7 @@
 
 All the endpoints are accessible from http://localhost:8080 once the Spring Boot application is running.
 
-**The application was deployed [here](https://gbloch-spring-mvc-rest.herokuapp.com/swagger-ui.html)**
+**The application was deployed [here](https://gbloch-spring-mvc-rest.herokuapp.com/swagger-ui.html)**.
 
 ## Swagger generated REST API documentation 
 
